@@ -1,46 +1,46 @@
 import { Typography } from "@mui/material";
 import Loader from '../assets/Spinner.svg';
 
-const LogTable = ({ logs }) => {
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    const getStatus = (message) => {
-        const status = message[0];
-        if (status < 'h') {
-            return 'error';
-        } else if (status < 'p') {
-            return 'success';
-        } else {
-            return 'info';
-        }
+export const logFormatDate = (timestamp) => {
+    const date = new Date(timestamp);
+
+    const month = months[date.getMonth()];
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
+
+    const formattedTime = `${month} ${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+
+    return formattedTime;
+};
+
+export const getStatus = (message) => {
+    const status = message[0];
+    if (status < 'h') {
+        return 'error';
+    } else if (status < 'p') {
+        return 'success';
+    } else {
+        return 'info';
     }
+}
 
-    const getColor = (name) => {
-        switch (name) {
-            case 'success':
-                return '#2DD4BF';
-            case 'error':
-                return '#F87171';
-            default:
-                return '#5E7BAA';
-        }
-    };
+export const getColor = (name) => {
+    switch (name) {
+        case 'success':
+            return '#2DD4BF';
+        case 'error':
+            return '#F87171';
+        default:
+            return '#5E7BAA';
+    }
+};
 
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    const formatDate = (timestamp) => {
-        const date = new Date(timestamp);
-
-        const month = months[date.getMonth()];
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
-
-        const formattedTime = `${month} ${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
-
-        return formattedTime;
-    };
+const LogTable = ({ logs }) => {
 
     return (
         <>
@@ -57,7 +57,7 @@ const LogTable = ({ logs }) => {
                 {logs.length > 0 ? logs.map((log, index) => (
                     <div className="logLine" key={index} >
                         <Typography className={'time'} variant={'h6'} style={{ borderLeft: `5px solid ${getColor(getStatus(log.message))}` }}>
-                            {formatDate(log.timestamp)}
+                            {logFormatDate(log.timestamp)}
                         </Typography>
                         <Typography className={'status'} variant={'h6'} color={getColor(getStatus(log.message))}>
                             {'[' + getStatus(log.message) + ']'}

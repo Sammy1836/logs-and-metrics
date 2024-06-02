@@ -4,7 +4,7 @@ import Graph from "../components/Graph";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const formatDate = (timestamp) => {
+export const formatDate = (timestamp) => {
     const date = new Date(timestamp);
 
     const day = String(date.getDate()).padStart(2, '0');
@@ -52,4 +52,3 @@ const Metrics = () => {
 }
 
 export default Metrics;
-export { formatDate };

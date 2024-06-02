@@ -5,8 +5,6 @@ import LogTable from "../components/LogTable";
 import { formatDate } from "./Metrics";
 import { useSelector } from "react-redux";
 
-let arr = [];
-
 const Logs = () => {
     const [logs, setLogs] = useState([]);
 
@@ -29,26 +27,18 @@ const Logs = () => {
         let unsubscribe;
 
         if (active) {
-            MimicLogs.subscribeToLiveLogs((log) => {
-                console.log(log);
-                arr.push(log);
-                setLogs(arr);
-                console.log('arr', arr);
-                console.log(logs);
-            })
+            unsubscribe = MimicLogs.subscribeToLiveLogs((log) => {
+                setLogs(prevLogs => [log, ...prevLogs]);
+                console.log(log, logs);
+            });
         }
 
         return () => {
             if (unsubscribe) {
                 unsubscribe();
             }
-        }
+        };
     }, [active]);
-
-    // useEffect(() => {
-    //     setLogs(arr);
-    //     console.log('here');
-    // }, [arr])
 
     return (
         <>
