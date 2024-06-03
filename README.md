@@ -1,8 +1,19 @@
-# React + Vite
+# Metrics & Logs Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a web application that visualizes metrics and logs data. It allows users to view various metrics in a line graph format and dynamically fetch logs based on selected time frames. The application is built using React, Redux, and Chart.js.
 
-Currently, two official plugins are available:
+## Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Redux
+- Material UI (MUI)
+- Chartjs
+- Vite
+
+## Installation
+
+1. ```bash
+   npm install
+
+***
+After completing all the installations, run `npm run dev` to start the development server.
