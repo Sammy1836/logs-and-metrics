@@ -1,16 +1,14 @@
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, elements } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Button, ButtonGroup, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { getTimeDiff } from '../redux/timeSlice';
-import LogTable from './LogTable';
+import { useEffect, useRef, useState } from 'react';
 import { MimicLogs } from '../api-mimic';
 import LogPopup from './LogPopup';
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend, Filler);
 
 const Graph = ({ data }) => {
+    const chartRef = useRef(null);
 
     const [logs, setLogs] = useState([]);
 
@@ -19,6 +17,7 @@ const Graph = ({ data }) => {
     const [startSelection, setStartSelection] = useState(false);
     const [clickXpositon, setClickXposition] = useState({});
     const [showLogPopup, setShowLogPopup] = useState(false);
+    const [gradient, setGradient] = useState(null);
 
     const style = {
         position: 'fixed',
@@ -45,8 +44,6 @@ const Graph = ({ data }) => {
                 const startTs = startTime.getTime();
                 const endTs = endTime.getTime();
 
-                // const startTs = (startH * 60 + startM) * 60 * 1000;
-                // const endTs = (endH * 60 + endM) * 60 * 1000;
                 const limit = 10 + Math.floor(Math.random() * 90);
 
                 MimicLogs.fetchPreviousLogs({ startTs, endTs, limit })
@@ -57,6 +54,17 @@ const Graph = ({ data }) => {
             }
         }
     }, [isSelected, selectedXrange])
+
+    useEffect(() => {
+        if (chartRef.current) {
+            const ctx = chartRef.current.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, '#2563EB');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // fade to transparent
+            setGradient(gradient);
+            console.log('gradient', gradient);
+        }
+    }, [chartRef, chartRef.current]);
 
     const handleMouseDown = (chart, elements) => {
         if (elements.length > 0) {
@@ -108,13 +116,20 @@ const Graph = ({ data }) => {
         }
     };
 
+    const createGradient = (ctx, color) => {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        return gradient;
+    };
+
     const generateChartData = (metric) => ({
         labels: metric.graphLines[0].values.map(point => new Date(point.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
         datasets: metric.graphLines.map(line => ({
             label: line.name,
             data: line.values.map(point => point.value),
             borderColor: getColor(line.name),
-            backgroundColor: metric.name === 'Disk IOPS' ? getColor(line.name) : 'transparent',
+            backgroundColor: metric.name === 'Disk IOPS' && chartRef.current && gradient ? createGradient(chartRef.current.ctx, getColor(line.name)) : 'transparent',
             tension: 0.1,
             fill: metric.name === 'Disk IOPS' ? true : false,
             borderWidth: 2,
@@ -165,7 +180,7 @@ const Graph = ({ data }) => {
             <div className="graphOuter">
                 {data.map((metric, index) => (
                     <div key={index} className="graphInner">
-                        <Line data={generateChartData(metric)} options={generateOptions(metric)} />
+                        <Line ref={chartRef} data={generateChartData(metric)} options={generateOptions(metric)} />
                     </div>
                 ))}
             </div>

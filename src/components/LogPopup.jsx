@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { getColor, getStatus, logFormatDate } from "./LogTable";
 
-const LogPopup = ({ logs, style }) => {
+const LogPopup = ({ logs }) => {
     return (
         <>
             {logs.length > 0 ? logs.map((log, index) => (
