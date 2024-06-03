@@ -40,7 +40,7 @@ export const getColor = (name) => {
     }
 };
 
-const LogTable = ({ logs }) => {
+const LogTable = ({ logs, active }) => {
 
     return (
         <>
@@ -52,7 +52,9 @@ const LogTable = ({ logs }) => {
                             <Typography variant={'h6'} style={{ color: '#82A0CE', paddingLeft: '10px' }}>Loading logs...</Typography>
                         </>
                     ) :
-                        <Typography variant={'h6'} style={{ color: 'green' }}>Logs fetched successfully</Typography>}
+                        <Typography variant={'h6'} style={{ color: 'green' }}>
+                            {active ? 'Fetching live logs...' : 'Logs fetched successfully'}
+                        </Typography>}
                 </div>
                 {logs.length > 0 ? logs.map((log, index) => (
                     <div className="logLine" key={index} >

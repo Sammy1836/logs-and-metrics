@@ -45,7 +45,7 @@ const Logs = () => {
             <Typography variant={'h6'} style={{ fontSize: '12px', textAlign: 'right', padding: ' 10px 25px 5px 20px', color: 'gray' }}>
                 {'Showing Logs for ' + formatDate(startTs) + ' → ' + formatDate(endTs)}
             </Typography>
-            <LogTable logs={logs} />
+            <LogTable logs={logs} active = {active} />
         </>
     )
 }
